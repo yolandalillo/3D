@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Clear canvas</title>
+</head>
+
+<body onload="init()">
+    <!--width es el ancho y height el alto que debemos modificar-->
+    <!--Nuestra página web contiene únicamente un elemento <canvas>-->
+    <canvas id="myCanvas" width="1000" height="500"></canvas>
+</body>
+
+<script>
+    function init() {
+      //En código JavaScript hemos implementado la función init()que se ejecuta al cargarse el cuerpo de la página web (onload="init()")
+
+        //En la función init()en primer lugar se lee el objeto canvasdel DOM
+        // Get canvas object from the DOM
+        var canvas = document.getElementById("myCanvas");
+
+        //Después, obtenemos el contexto WebGL, que nos da acceso a toda la API JavaScript de WebGL
+        // Get the rendering context for WebGL
+        var gl = canvas.getContext("webgl");
+        if (!gl) {
+          //Mediante esta condición, estamos verificando que la variable gltiene valor. Si WebGL no estuviese soportado, se
+          //mostraría la un mensaje de error por la consola del navegador console.log("...");"
+            console.log("Failed to get the rendering context for WebGL");
+            return;
+        }
+
+        // Set clear color
+        //Mediante el método clearColorespecificamos el color RGBA (modelo de color aditivocon transparencia)
+        // con el que se coloreará el canvas. En este ejemplo será negro (red=0, green=0, blue=0, alpha=0)
+        //Modificamos este color a un color rosa sólido
+        gl.clearColor(255.0, 0.0, 128.0, 1.0);
+
+        // Clear canvas
+        //Mediante el método clearse realiza el coloreado en base al color previamente definido
+        gl.clear(gl.COLOR_BUFFER_BIT);
+    }
+</script>
+
+</html>
