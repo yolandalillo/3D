@@ -64,10 +64,19 @@
             // Draw Scene
             drawScene();
             //Event listener for mouse wheel
-            document.addEventListener('wheel', function (event){
-                z = event.wheelDelta > 0 ? z + 1 : z - 1
-            });
+            mouse();
         }
+
+        function mouse (){
+          var projectionValue = document.querySelector('input[name="projection"]:checked').value;
+          document.addEventListener('wheel', function (event){
+              if(projectionValue == 'perspective'){
+                z = event.wheelDelta > 0 ? z + 1 : z - 1
+              }
+          });
+        }
+
+
 
         function drawScene() {
 
@@ -186,18 +195,18 @@
             var ratio = canvas.width / canvas.height;
             if (projectionValue == 'orthographic') {
               var pMatrix = mat4.ortho(mat4.create(), -ratio, ratio, 1.0, -1.0, 5.0, -1.0);
-              document.addEventListener('wheel', function (event){
-                  z = z
-              });
+              var vMatrix = mat4.lookAt(mat4.create(), [0, 0, 0], [0, 0, 0], [0, 1, 0]);
+
             }else if (projectionValue == 'perspective') {
               var pMatrix = mat4.perspective(mat4.create(), 150, ratio, 0.1, 100);
+              var vMatrix = mat4.lookAt(mat4.create(), [0, 0, z], [0, 0, 0], [0, 1, 0]);
+
             }
 
             gl.uniformMatrix4fv(pMatrixUniform, false, pMatrix);
 
             // Write u_vMatrix
             var vMatrixUniform = gl.getUniformLocation(gl.program, "u_vMatrix");
-            var vMatrix = mat4.lookAt(mat4.create(), [0, 0, z], [0, 0, 0], [0, 1, 0]);
             gl.uniformMatrix4fv(vMatrixUniform, false, vMatrix);
         }
 
