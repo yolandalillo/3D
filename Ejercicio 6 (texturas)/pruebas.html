@@ -37,7 +37,10 @@
     <script>
         var gl;
         var count = 0.0;
+
         var z = -3;
+        var countX = 0.0;
+        var countY = 0.0;
 
         function init() {
             // Get canvas object from the DOM
@@ -71,11 +74,47 @@
             initTexturesAndDraw(gl);
             //Para mover la rueda del ratón
             document.addEventListener('wheel', function (event){
-              console.log("Entra en la funcion");
+              console.log("Movemos la rueda del ratón");
                   z = event.wheelDelta > 0 ? z + 1 : z - 1;
                   initProjection(gl, canvas);
 
             });
+            document.onkeydown = function (ev) {
+              var step = new Number(document.getElementById("step").value);
+              switch (ev.keyCode) {
+                case 37: // Left
+                //Consolo log para ver en consola cuando movimientos y hacia donde
+                //Los countX y countY= 0.0 es porque sino el cubo se lía
+                console.log("The user clicked Left");
+                countY -= step;
+                countX = 0.0;
+                break;
+                case 39: // Right
+                console.log("The user clicked Right");
+                countY += step;
+                countX = 0.0;
+                break;
+                case 38: // Up
+                console.log("The user clicked Up");
+                countX += step;
+                countY = 0.0;
+                break;
+                case 40: // Down
+                console.log("The user clicked Down");
+                countX -= step;
+                countY = 0.0;
+                break;
+                
+                case 33: // PageUp
+                console.log("The user clicked PageUp");
+                break;
+                case 34: // PageDown
+                console.log("The user clicked PageDown");
+                break;
+
+                }
+              drawScene();
+              }
 
 
         }
@@ -198,8 +237,14 @@
             // Clear
             gl.clear(gl.COLOR_BUFFER_BIT);
 
+            var rotX = mat4.fromXRotation(mat4.create(), countX);
+            var rotY = mat4.fromYRotation(mat4.create(), countY);
+
+            var mvMatrix = mat4.multiply(mat4.create(), rotX, rotY);
+
+
             // Rotate
-            var mvMatrix = mat4.fromRotation(mat4.create(), count, [0.5, 0.5, 0.5]);
+            //var mvMatrix = mat4.fromRotation(mat4.create(), count, [0.5, 0.5, 0.5]);
             var uMvMatrix = gl.getUniformLocation(gl.program, "u_mvMatrix");
             gl.uniformMatrix4fv(uMvMatrix, false, mvMatrix);
 
@@ -208,7 +253,7 @@
 
             // Call drawScene again in the next browser repaint
             //count += 0.01;
-            requestAnimationFrame(drawScene);
+            //requestAnimationFrame(drawScene);
         }
 
         function initShaders(gl, vs_source, fs_source) {
