@@ -37,6 +37,7 @@
     <script>
         var gl;
         var count = 0.0;
+        var z = -3;
 
         function init() {
             // Get canvas object from the DOM
@@ -68,9 +69,16 @@
 
             // Init textures
             initTexturesAndDraw(gl);
+            //Para mover la rueda del ratón
+            document.addEventListener('wheel', function (event){
+              console.log("Entra en la funcion");
+                  z = event.wheelDelta > 0 ? z + 1 : z - 1;
+                  initProjection(gl, canvas);
+
+            });
+
 
         }
-
 
         function initVertexShader(gl) {
             // Vertexes and texture coordinates
@@ -153,7 +161,7 @@
 
             // Write u_vMatrix
             var vMatrixUniform = gl.getUniformLocation(gl.program, "u_vMatrix");
-            var vMatrix = mat4.lookAt(mat4.create(), [0, 0, -3], [0, 0, 0], [0, 1, 0]);
+            var vMatrix = mat4.lookAt(mat4.create(), [0, 0, z], [0, 0, 0], [0, 1, 0]);
             gl.uniformMatrix4fv(vMatrixUniform, false, vMatrix);
         }
 
