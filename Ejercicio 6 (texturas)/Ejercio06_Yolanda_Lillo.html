@@ -94,25 +94,25 @@
                 //Consolo log para ver en consola cuando movimientos y hacia donde
                 //Los countX y countY= 0.0 es porque sino el cubo se lía
                 console.log("The user clicked Left");
-                countY -= step;
+                countY += step;
                 countX = 0.0;
                 vfinal = v1;
                 break;
                 case 39: // Right
                 console.log("The user clicked Right");
-                countY += step;
+                countY -= step;
                 countX = 0.0;
                 vfinal = v3;
                 break;
                 case 38: // Up
                 console.log("The user clicked Up");
-                countX += step;
+                countX -= step;
                 countY = 0.0;
                 vfinal = v4;
                 break;
                 case 40: // Down
                 console.log("The user clicked Down");
-                countX -= step;
+                countX += step;
                 countY = 0.0;
                 vfinal = v2;
                 break;
@@ -128,7 +128,7 @@
 
                 break;
                 }
-              drawScene();
+              //drawScene();
               initVertexShader(gl);
               }
 
@@ -270,7 +270,7 @@
 
             // Call drawScene again in the next browser repaint
             //count += 0.01;
-            //requestAnimationFrame(drawScene);
+            requestAnimationFrame(drawScene);
         }
 
         function initShaders(gl, vs_source, fs_source) {
@@ -308,7 +308,7 @@
 <body onload="init()">
     <canvas id="myCanvas" width="640" height="480"></canvas>
     <br>
-    Step: <input type="text" value="0.01" id="step">
+    Step: <input type="text" value="0.1" id="step">
 </body>
 
 </html>
