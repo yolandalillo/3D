@@ -44,6 +44,12 @@
         var countX = 0.0;
         var countY = 0.0;
 
+        var v1 = [0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0];
+        var v2 = [0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0];
+        var v3 = [1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0];
+        var v4 = [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0];
+        var vfinal = v1;
+
         function init() {
             // Get canvas object from the DOM
             canvas = document.getElementById("myCanvas");
@@ -90,21 +96,25 @@
                 console.log("The user clicked Left");
                 countY -= step;
                 countX = 0.0;
+                vfinal = v1;
                 break;
                 case 39: // Right
                 console.log("The user clicked Right");
                 countY += step;
                 countX = 0.0;
+                vfinal = v3;
                 break;
                 case 38: // Up
                 console.log("The user clicked Up");
                 countX += step;
                 countY = 0.0;
+                vfinal = v4;
                 break;
                 case 40: // Down
                 console.log("The user clicked Down");
                 countX -= step;
                 countY = 0.0;
+                vfinal = v2;
                 break;
 
                 case 33: // PageUp
@@ -119,6 +129,7 @@
                 break;
                 }
               drawScene();
+              initVertexShader(gl);
               }
 
 
@@ -127,35 +138,36 @@
         function initVertexShader(gl) {
             // Vertexes and texture coordinates
             var vertexesAndTextures = [
-                -0.5, -0.5, -0.5, 0.0, 0.0,
-                0.5, -0.5, -0.5, 1.0, 0.0,
-                0.5, 0.5, -0.5, 1.0, 1.0,
-                -0.5, 0.5, -0.5, 0.0, 1.0,
-
-                -0.5, -0.5, 0.5, 0.0, 1.0,
-                0.5, -0.5, 0.5, 0.0, 0.0,
-                0.5, 0.5, 0.5, 1.0, 0.0,
-                -0.5, 0.5, 0.5, 1.0, 1.0,
-
-                -0.5, -0.5, -0.5, 0.0, 0.0,
-                -0.5, 0.5, -0.5, 0.0, 1.0,
-                -0.5, 0.5, 0.5, 1.0, 1.0,
-                -0.5, -0.5, 0.5, 1.0, 0.0,
-
-                0.5, -0.5, -0.5, 0.0, 0.0,
-                0.5, 0.5, -0.5, 0.0, 1.0,
-                0.5, 0.5, 0.5, 1.0, 1.0,
-                0.5, -0.5, 0.5, 1.0, 0.0,
-
-                -0.5, -0.5, -0.5, 0.0, 0.0,
-                -0.5, -0.5, 0.5, 0.0, 1.0,
-                0.5, -0.5, 0.5, 1.0, 1.0,
-                0.5, -0.5, -0.5, 1.0, 0.0,
-
-                -0.5, 0.5, -0.5, 0.0, 1.0,
-                -0.5, 0.5, 0.5, 0.0, 0.0,
-                0.5, 0.5, 0.5, 1.0, 0.0,
-                0.5, 0.5, -0.5, 1.0, 1.0,
+              //Front
+                -0.5, -0.5, -0.5, vfinal[0], vfinal[1],
+                0.5, -0.5, -0.5, vfinal[2], vfinal[3],
+                0.5, 0.5, -0.5, vfinal[4], vfinal[5],
+                -0.5, 0.5, -0.5, vfinal[6], vfinal[7],
+                //Behind
+                -0.5, -0.5, 0.5, vfinal[4], vfinal[5],
+                0.5, -0.5, 0.5, vfinal[6], vfinal[7],
+                0.5, 0.5, 0.5, vfinal[0], vfinal[1],
+                -0.5, 0.5, 0.5, vfinal[2], vfinal[3],
+                //Left
+                -0.5, -0.5, -0.5, vfinal[2], vfinal[3],
+                -0.5, 0.5, -0.5, vfinal[4], vfinal[5],
+                -0.5, 0.5, 0.5, vfinal[6], vfinal[7],
+                -0.5, -0.5, 0.5, vfinal[0], vfinal[1],
+                //Right
+                0.5, -0.5, -0.5, vfinal[6], vfinal[7],
+                0.5, 0.5, -0.5, vfinal[0], vfinal[1],
+                0.5, 0.5, 0.5, vfinal[2], vfinal[3],
+                0.5, -0.5, 0.5, vfinal[4], vfinal[5],
+                //Up
+                -0.5, -0.5, -0.5,vfinal[6], vfinal[7],
+                -0.5, -0.5, 0.5, vfinal[0], vfinal[1],
+                0.5, -0.5, 0.5, vfinal[2], vfinal[3],
+                0.5, -0.5, -0.5, vfinal[4], vfinal[5],
+                //Down
+                -0.5, 0.5, -0.5, vfinal[2], vfinal[3],
+                -0.5, 0.5, 0.5, vfinal[4], vfinal[5],
+                0.5, 0.5, 0.5, vfinal[6], vfinal[7],
+                0.5, 0.5, -0.5, vfinal[0], vfinal[1],
             ];
 
             // Indexes
