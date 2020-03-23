@@ -38,7 +38,7 @@
 
         void main(void) {
           vec4 texture = texture2D(u_Sampler, v_TexCoord);
-          //float nDotL = max(dot(u_LightDirection, v_Normal), 0.0); //Theta          
+          //float nDotL = max(dot(u_LightDirection, v_Normal), 0.0); //Theta
           float nDotL = max(dot(u_LightDirection, v_Normal), 0.1); //Theta
           vec3 diffuse = u_LightColor * texture.rgb * nDotL;
           gl_FragColor = vec4(diffuse, texture.a); //vector de 4 rgba
@@ -266,9 +266,9 @@
     <canvas id="myCanvas" width="640" height="480"></canvas>
     <br>
     <b>Light direction</b><br>
-    <input type="range" id="x" min="-20" max="20" value="2" step="1">X<br>
-    <input type="range" id="y" min="-20" max="20" value="8" step="1">Y<br>
-    <input type="range" id="z" min="-20" max="20" value="8" step="1">Z<br>
+    <input type="range" id="x" min="-20" max="20" value="-15" step="1">X<br>
+    <input type="range" id="y" min="-20" max="20" value="5" step="1">Y<br>
+    <input type="range" id="z" min="-20" max="20" value="10" step="1">Z<br>
 </body>
 
 </html>
