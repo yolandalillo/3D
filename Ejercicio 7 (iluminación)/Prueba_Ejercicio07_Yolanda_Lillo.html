@@ -38,7 +38,8 @@
 
         void main(void) {
           vec4 texture = texture2D(u_Sampler, v_TexCoord);
-          float nDotL = max(dot(u_LightDirection, v_Normal), 0.0); //Theta
+          //float nDotL = max(dot(u_LightDirection, v_Normal), 0.0); //Theta          
+          float nDotL = max(dot(u_LightDirection, v_Normal), 0.1); //Theta
           vec3 diffuse = u_LightColor * texture.rgb * nDotL;
           gl_FragColor = vec4(diffuse, texture.a); //vector de 4 rgba
         }
