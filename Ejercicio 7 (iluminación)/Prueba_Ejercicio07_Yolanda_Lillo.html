@@ -14,34 +14,37 @@
         uniform mat4 u_pMatrix;
         uniform mat4 u_vMatrix;
         uniform mat4 u_mvMatrix;
+        uniform mat4 u_NormalMatrix;
 
         varying vec2 v_TexCoord;
-        varying highp vec3 v_Normal;
+        varying vec4 transformedNormal;
 
         void main() {
             gl_Position = u_pMatrix * u_vMatrix * u_mvMatrix * a_Position;
+            transformedNormal = u_NormalMatrix * vec4(a_Normal,1.0);
             v_TexCoord = a_TexCoord;
-            v_Normal = normalize(a_Normal - vec3(gl_Position));
-
         }
     </script>
 
     <script id="shaderFs" type="x-shader/x-fragment">
         precision highp float;
         precision mediump float;
-        uniform sampler2D u_Sampler;
-        varying vec2 v_TexCoord;
 
+        uniform sampler2D u_Sampler;
         uniform vec3 u_LightColor;
+        uniform vec3 u_AmbientLight;
         uniform vec3 u_LightDirection;
-        varying highp vec3 v_Normal;
+
+        varying vec2 v_TexCoord;
+        varying vec4 transformedNormal;
 
         void main(void) {
+          float nDotL = max(dot(u_LightDirection,normalize(transformedNormal.xyz)),0.0);
           vec4 texture = texture2D(u_Sampler, v_TexCoord);
-          //float nDotL = max(dot(u_LightDirection, v_Normal), 0.0); //Theta
-          float nDotL = max(dot(u_LightDirection, v_Normal), 0.1); //Theta
           vec3 diffuse = u_LightColor * texture.rgb * nDotL;
-          gl_FragColor = vec4(diffuse, texture.a); //vector de 4 rgba
+          vec3 ambient = u_AmbientLight * texture.rgb;
+
+          gl_FragColor = vec4(diffuse + ambient, texture.a); //vector de 4 rgba
         }
     </script>
 
@@ -166,25 +169,27 @@
             // Write u_pMatrix
             var pMatrixUniform = gl.getUniformLocation(gl.program, "u_pMatrix");
             var ratio = canvas.width / canvas.height;
-            var pMatrix = mat4.perspective(mat4.create(), 150, ratio, 0.1, 100);
+            var pMatrix = mat4.perspective(mat4.create(), 0.9, ratio, 0.1, 100);
             gl.uniformMatrix4fv(pMatrixUniform, false, pMatrix);
 
             // Write u_vMatrix
             var vMatrixUniform = gl.getUniformLocation(gl.program, "u_vMatrix");
-            var vMatrix = mat4.lookAt(mat4.create(), [0, 0, -3], [0, 0, 0], [0, 1, 0]);
+            var vMatrix = mat4.lookAt(mat4.create(), [0, 0, 3], [0, 0, 0], [0, 1, 0]);
             gl.uniformMatrix4fv(vMatrixUniform, false, vMatrix);
 
             // Write u_LightColor
             var lightColor = [ 1.0, 1.0, 1.0 ]; // white
             var lightColorUniform = gl.getUniformLocation(gl.program, "u_LightColor");
             gl.uniform3fv(lightColorUniform, lightColor);
+
+
         }
 
         function initTexturesAndDraw(gl) {
             var image = new Image();
             image.src = 'deathstar.png';
             image.onload = function () {
-                loadTexture(gl, "u_Sampler", image, 0, false);
+                loadTexture(gl, "u_Sampler", image, 0, true);
                 drawScene();
             };
         }
