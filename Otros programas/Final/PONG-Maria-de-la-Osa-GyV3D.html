@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<title>PONG</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/103/three.min.js"></script>
+
+<script>
+
+    var step = 1;
+    var stepX = 0.10;
+    var stepY = 0.10;
+    var startGame = false;
+    var scoreCPU = 0;
+    var scorePlayer = 0;
+
+   function init() {
+      var scene = new THREE.Scene();
+      var sceneWidth = window.innerWidth/1.5;
+      var sceneHeight = window.innerHeight/1.5;
+
+      var camera = new THREE.PerspectiveCamera(90, sceneWidth / sceneHeight, 0.01, 100);
+      camera.position.set(0, -10, 15);
+      camera.lookAt(scene.position);
+
+      var renderer = new THREE.WebGLRenderer({
+         antialias : true
+      });
+      renderer.shadowMap.enabled = true;
+      renderer.setSize(sceneWidth, sceneHeight);
+      document.body.appendChild(renderer.domElement);
+
+      var light = getLight();
+      var secondLight = getSecondLight();
+      var leftBorder = getBorder("left", 1, 20, 2, -7, 0, 0);
+      var rightBorder = getBorder("right", 1, 20, 2, 7, 0, 0);
+      var cpu = getBorder("top", 3, 1, 2, 0, 9.5, 0); // Top
+      var player = getBorder("down", 3, 1, 2, 0, -9.5, 0); // Down
+      var sphere = getSphere();
+      var floor = getFloor();
+
+      scene.add(light);
+      scene.add(secondLight);
+      scene.add(leftBorder);
+      scene.add(rightBorder);
+      scene.add(cpu);
+      scene.add(player);
+      scene.add(sphere);
+      scene.add(floor);
+
+      var borders = [leftBorder, rightBorder, cpu, player];
+
+      animate(sphere, borders, renderer, scene, camera);
+
+   }
+   function playermovement(sphere, borders){
+     // Player movement
+     document.onkeydown = function (keypressed) {
+         switch (keypressed.keyCode) {
+             case 32: // Space, start
+                 startGame = true;
+                 break;
+             case 37: // Left, x axis
+                 borders[3].position.x -= step;
+                 break;
+             case 39: // Right, y axis
+                 borders[3].position.x += step;
+                 break;
+       }
+     }
+   }
+
+   function spheremovement(sphere){
+     // Ball movement
+     if (startGame){
+       sphere.position.x += stepX;
+       sphere.position.y += stepY;
+     }
+   }
+
+   function cpumovement(sphere, borders){
+       // CPU movement
+       spheremovement(sphere);
+       var level = document.querySelector('input[name="level"]:checked').value;
+       // Levels CPU
+       if (level == 'Easy'){
+         borders[2].position.x = sphere.position.x * 0.15;
+       }else if (level == 'Medium') {
+         borders[2].position.x = sphere.position.x * 0.45;
+       }else if (level == 'Impossible') {
+         borders[2].position.x = sphere.position.x;
+       }
+       if (borders[2].position.x >= 8 || borders[2].position.x <= -8 ) {
+         borders[2].position.x = 0;
+       }
+    }
+
+   function animate(sphere, borders, renderer, scene, camera) {
+     checkCollision(sphere, borders);
+     score(sphere);
+     playermovement(sphere, borders);
+     spheremovement(sphere);
+     cpumovement(sphere, borders);
+
+      renderer.render(scene, camera);
+
+      requestAnimationFrame(function() {
+         animate(sphere, borders, renderer, scene, camera);
+      });
+   }
+
+   function getLight() {
+      var light = new THREE.DirectionalLight();
+      light.position.set(0, -4, 10);
+      light.castShadow = true;
+      light.shadow.camera.near = 5;
+      light.shadow.camera.far = 25;
+      light.shadow.camera.left = 10;
+      light.shadow.camera.right = -10;
+      light.shadow.camera.top = 30;
+      light.shadow.camera.bottom = -10;
+      light.shadow.mapSize.width = 4096;
+      light.shadow.mapSize.height = 4096;
+      return light;
+   }
+
+   function getSecondLight() {
+      var secondLight = new THREE.DirectionalLight();
+      secondLight.position.set(0, 46, 5);
+      secondLight.castShadow = true;
+      secondLight.shadow.camera.near = 5;
+      secondLight.shadow.camera.far = 25;
+      secondLight.shadow.camera.left = 10;
+      secondLight.shadow.camera.right = 50;
+      secondLight.shadow.camera.top = 30;
+      secondLight.shadow.camera.bottom = -10;
+      secondLight.shadow.mapSize.width = 4096;
+      secondLight.shadow.mapSize.height = 4096;
+      return secondLight;
+   }
+
+   function getSphere() {
+     var texture = new THREE.TextureLoader().load("ball.png");
+      var geometry = new THREE.SphereGeometry(1, 20, 20);
+      var mesh = new THREE.Mesh(geometry, getMaterial(texture));
+      mesh.position.z = 1;
+      mesh.castShadow = true;
+
+      return mesh;
+   }
+
+   function getFloor() {
+      var texture = new THREE.TextureLoader().load("mosaic.jpg");
+      var geometry = new THREE.PlaneGeometry(15, 20);
+      var mesh = new THREE.Mesh(geometry, getMaterial(texture));
+      mesh.receiveShadow = true;
+
+      return mesh;
+   }
+
+   function getBorder(name, x, y, z, posX, posY, posZ) {
+      var geometry = new THREE.BoxGeometry(x, y, z);
+      var texture = new THREE.TextureLoader().load("corcho.jpg");
+      var mesh = new THREE.Mesh(geometry, getMaterial(texture));
+      mesh.receiveShadow = true;
+      mesh.position.set(posX, posY, posZ);
+      mesh.name = name;
+
+      return mesh;
+   }
+
+   function getMaterial(texture) {
+      var material = new THREE.MeshPhysicalMaterial({
+         map : texture
+      });
+      material.map.wrapS = material.map.wrapT = THREE.RepeatWrapping;
+      material.map.repeat.set(0.5, 1);
+      material.side = THREE.DoubleSide;
+
+      return material;
+   }
+
+   function checkCollision(sphere, borders) {
+      var originPosition = sphere.position.clone();
+
+      for (var i = 0; i < sphere.geometry.vertices.length; i++) {
+         var localVertex = sphere.geometry.vertices[i].clone();
+         var globalVertex = localVertex.applyMatrix4(sphere.matrix);
+         var directionVector = globalVertex.sub(sphere.position);
+         var ray = new THREE.Raycaster(originPosition, directionVector.clone().normalize());
+         var collisionResults = ray.intersectObjects(borders);
+         if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
+            // Collision detected
+            if (collisionResults[0].object.name == "left" || collisionResults[0].object.name == "right") {
+               stepX *= -1;
+            }
+            if (collisionResults[0].object.name == "down" || collisionResults[0].object.name == "top") {
+               stepY *= -1;
+            }
+            break;
+         }
+      }
+   }
+
+   function score(sphere){
+      if (sphere.position.y > 12) {
+        sphere.position.x = 0;
+        sphere.position.y = 0;
+        startGame = false;
+        scorePlayer += 1;
+        stepY = -stepY;
+      }
+      if (sphere.position.y < -12) {
+        sphere.position.x = 0;
+        sphere.position.y = 0;
+        startGame = false;
+        scoreCPU += 1;
+        stepY = -stepY;
+      }
+
+     if ((scorePlayer || scoreCPU) == 5) {
+         startGame = false;
+         if (scorePlayer == 5) {
+           document.getElementById("message").innerHTML = ('Player wins: ' + scoreCPU + '-' + scorePlayer + '. Press space to start again');
+         }
+         if (scoreCPU == 5) {
+           document.getElementById("message").innerHTML = ('CPU wins: ' + scoreCPU + '-' + scorePlayer + '. Press space to start again');
+         }
+         scorePlayer = 0;
+         scoreCPU = 0;
+     }
+     document.getElementById("scores").innerHTML = (scoreCPU + '-' + scorePlayer);
+   }
+</script>
+</head>
+
+<body onload="init()">
+
+  <h2> First to score 5 wins. Press space to start.</h2>
+  <b>Select your level</b>
+  <input type="radio" name="level" value="Easy" checked> <b>Easy</b>
+  <input type="radio" name="level" value="Medium"> <b>Medium</b>
+  <input type="radio" name="level" value="Impossible"> <b>Impossible</b>
+  <h2 style="color:#3375FF" id='message'></h2>
+  <h1 style="color:#EB0F0F" id='scores'>0 - 0</h1>
+</body>
+
+</html>

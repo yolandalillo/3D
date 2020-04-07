@@ -1,0 +1,4 @@
+Partes implementadas:
+	-Parte básica
+	-Parte avanzada (ganar a la CPU)
+	-Mejoras (niveles)
