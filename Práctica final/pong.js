@@ -15,7 +15,7 @@ function init() {
 
   var renderer = new THREE.WebGLRenderer({
     antialias : true
- });
+  });
   renderer.shadowMap.enabled = true;
   renderer.setSize(sceneWidth, sceneHeight);
   document.body.appendChild(renderer.domElement);
@@ -46,7 +46,11 @@ function init() {
 
 }
 
+
+}
+
 function animate(sphere, borders, renderer, scene, camera){
+
 
 }
 
@@ -60,6 +64,18 @@ function getSecondLight() {
 
 function getSphere(){
 
+   var geometry = new THREE.SphereGeometry(1, 20, 20);
+   var material = new THREE.MeshNormalMaterial();
+   var mesh = new Physijs.BoxMesh(geometry, material);
+   mesh.position.z = 1;
+   mesh.castShadow = true;
+   mesh.name = "sphere";
+   mesh.addEventListener('collision', function(otherObject) {
+      console.log(otherObject.name);
+   });
+
+   return mesh;
+
 }
 
 function getFloor(){
@@ -72,6 +88,29 @@ function getFloor(){
 
 }
 
-function getBorder(){
+function getBorder(name, x, y, z, posX, posY, posZ){
+  var geometry = new THREE.BoxGeometry(x, y, z);
+  var mesh = new THREE.Mesh(geometry, getMaterial(texture));
+  mesh.receiveShadow = true;
+  mesh.position.set(posX, posY, posZ);
+  mesh.name = name;
 
+  return mesh;
+
+}
+
+function getMaterial(){
+  var texture = new THREE.TextureLoader().load("wood.png");
+  var material = new THREE.MeshPhysicalMaterial({
+     map : texture
+  });
+  material.map.wrapS = material.map.wrapT = THREE.RepeatWrapping;
+  material.map.repeat.set(0.5, 1);
+  material.side = THREE.DoubleSide;
+  return material;
+}
+
+}
+
+function checkCollision(sphere, borders) {
 }
