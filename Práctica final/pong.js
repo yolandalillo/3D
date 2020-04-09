@@ -18,6 +18,7 @@ function init() {
    document.body.appendChild(renderer.domElement);
 
    var light = getLight();
+   var secondLight = getSecondLight();
    var leftBorder = getBorder("left", 1, 20, 2, -5, 0, 0);
    var rightBorder = getBorder("right", 1, 20, 2, 5, 0, 0);
    var topBorder = getBorder("top", 11, 1, 2, 0, 10, 0);
@@ -26,6 +27,7 @@ function init() {
    var floor = getFloor();
 
    scene.add(light);
+   scene.add(secondLight);
    scene.add(leftBorder);
    scene.add(rightBorder);
    scene.add(topBorder);
@@ -53,7 +55,7 @@ function animate(sphere, borders, renderer, scene, camera) {
 
 function getLight() {
    var light = new THREE.DirectionalLight();
-   light.position.set(4, 4, 4);
+   light.position.set(4, -4, 10);
    light.castShadow = true;
    light.shadow.camera.near = 0;
    light.shadow.camera.far = 16;
@@ -64,6 +66,21 @@ function getLight() {
    light.shadow.mapSize.width = 4096;
    light.shadow.mapSize.height = 4096;
    return light;
+}
+
+function getSecondLight() {
+   var secondLight = new THREE.DirectionalLight();
+   secondLight.position.set(4, 40, 5);
+   secondLight.castShadow = true;
+   secondLight.shadow.camera.near = 0;
+   secondLight.shadow.camera.far = 16;
+   secondLight.shadow.camera.left = -8;
+   secondLight.shadow.camera.right = 5;
+   secondLight.shadow.camera.top = 10;
+   secondLight.shadow.camera.bottom = -10;
+   secondLight.shadow.mapSize.width = 4096;
+   secondLight.shadow.mapSize.height = 4096;
+   return secondLight;
 }
 
 function getSphere() {
