@@ -2,6 +2,8 @@ var stepX = 0.15;
 var stepY = 0.25;
 var start = false;
 var step = 0.5;
+var scoreCPU = 0;
+var scorePlayer = 0;
 
 function init() {
    var scene = new THREE.Scene();
@@ -25,6 +27,8 @@ function init() {
    var rightBorder = getBorder("right", 1, 20, 2, 5, 0, 0);
    var topBorder = getBorder("top",  2.5, 1, 2, 0, 9.5, 0); //CPU
    var downBorder = getBorder("down",  2.5, 1, 2, 0, -9.5, 0); //Player
+   //var topBorder = getBorder("top",  2.5, 1, 2, 0, 10.5, 0); //CPU
+   //var downBorder = getBorder("down",  2.5, 1, 2, 0, -10.5, 0); //Player
    var sphere = getSphere();
    var floor = getFloor();
 
@@ -42,6 +46,7 @@ function init() {
    animate(sphere, borders, renderer, scene, camera);
 }
 
+        //MOVEMENTS//
 //better in a separate function so it's better understood
 //we call it in the animate function
 function spheremovement(sphere) {
@@ -69,7 +74,7 @@ function playermovement(sphere, borders) {
   }
 
 }
-
+        //ANIMATE//
 function animate(sphere, borders, renderer, scene, camera) {
    checkCollision(sphere, borders);
 
@@ -83,7 +88,7 @@ function animate(sphere, borders, renderer, scene, camera) {
    });
 }
 
-
+        //LIGHTS//
 function getLight() {
    var light = new THREE.DirectionalLight();
    light.position.set(4, -4, 10);
@@ -113,7 +118,7 @@ function getSecondLight() {
    secondLight.shadow.mapSize.height = 4096;
    return secondLight;
 }
-
+        //SPHERE, FLOOR AND BORDER//
 function getSphere() {
   var texture = new THREE.TextureLoader().load("ball.png");
 
@@ -160,7 +165,11 @@ function getWoodMaterial(texture) {
 
    return material;
 }
+        //SCORE//
+function score(sphere) {
 
+}
+        //COLLISION//
 function checkCollision(sphere, borders) {
    var originPosition = sphere.position.clone();
 
