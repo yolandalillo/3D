@@ -41,11 +41,23 @@ function init() {
    animate(sphere, borders, renderer, scene, camera);
 }
 
+//better in a separate function so it's better understood
+//we call it in the animate function
 function spheremovement(sphere) {
   if(start){
     sphere.position.x += stepX;
     sphere.position.y += stepY;
+  }
+}
 
+function playermovement(sphere, borders) {
+  //same as in other exercises
+  document.onkeydown = function (ev) {
+    switch (ev.keyCode) {
+      case 32: //space
+        start = true;
+        break;
+    }
   }
 
 }
@@ -56,6 +68,7 @@ function animate(sphere, borders, renderer, scene, camera) {
 // spheremovement
    //sphere.position.x += stepX;
    //sphere.position.y += stepY;
+   playermovement(sphere,borders);
    spheremovement(sphere);
    renderer.render(scene, camera);
 
