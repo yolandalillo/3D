@@ -1,6 +1,7 @@
 var stepX = 0.15;
 var stepY = 0.25;
 var start = false;
+var step = 0.5;
 
 function init() {
    var scene = new THREE.Scene();
@@ -57,6 +58,13 @@ function playermovement(sphere, borders) {
       case 32: //space
         start = true;
         break;
+      case 37: //movement to the left
+      //borders[2] CPU  borders[1] right
+        borders[3].position.x -= step;
+        break;
+      case 39: //movement to the right
+        borders[3].position.x += step;
+        break;
     }
   }
 
@@ -65,9 +73,7 @@ function playermovement(sphere, borders) {
 function animate(sphere, borders, renderer, scene, camera) {
    checkCollision(sphere, borders);
 
-// spheremovement
-   //sphere.position.x += stepX;
-   //sphere.position.y += stepY;
+
    playermovement(sphere,borders);
    spheremovement(sphere);
    renderer.render(scene, camera);
@@ -109,9 +115,11 @@ function getSecondLight() {
 }
 
 function getSphere() {
+  var texture = new THREE.TextureLoader().load("ball.png");
+
    var geometry = new THREE.SphereGeometry(1, 20, 20);
    var material = new THREE.MeshNormalMaterial();
-   var mesh = new THREE.Mesh(geometry, material);
+   var mesh = new THREE.Mesh(geometry, getWoodMaterial(texture));
    mesh.position.z = 1;
    mesh.castShadow = true;
    mesh.name = "sphere";
@@ -120,7 +128,7 @@ function getSphere() {
 }
 
 function getFloor() {
-  var texture = new THREE.TextureLoader().load("d4.jpg");
+  var texture = new THREE.TextureLoader().load("floor.jpg");
 
 
    var geometry = new THREE.PlaneGeometry(10, 20);
