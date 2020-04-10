@@ -22,8 +22,8 @@ function init() {
    var secondLight = getSecondLight();
    var leftBorder = getBorder("left", 1, 20, 2, -5, 0, 0);
    var rightBorder = getBorder("right", 1, 20, 2, 5, 0, 0);
-   var topBorder = getBorder("top", 11, 1, 2, 0, 10, 0); //CPU
-   var downBorder = getBorder("down", 9, 1, 2, 0, -9.5, 0); //Player
+   var topBorder = getBorder("top",  2.5, 1, 2, 0, 9.5, 0); //CPU
+   var downBorder = getBorder("down",  2.5, 1, 2, 0, -9.5, 0); //Player
    var sphere = getSphere();
    var floor = getFloor();
 
@@ -120,8 +120,11 @@ function getSphere() {
 }
 
 function getFloor() {
+  var texture = new THREE.TextureLoader().load("d4.jpg");
+
+
    var geometry = new THREE.PlaneGeometry(10, 20);
-   var mesh = new THREE.Mesh(geometry, getWoodMaterial());
+   var mesh = new THREE.Mesh(geometry, getWoodMaterial(texture));
    mesh.receiveShadow = true;
 
    return mesh;
@@ -129,7 +132,8 @@ function getFloor() {
 
 function getBorder(name, x, y, z, posX, posY, posZ) {
    var geometry = new THREE.BoxGeometry(x, y, z);
-   var mesh = new THREE.Mesh(geometry, getWoodMaterial());
+   var texture = new THREE.TextureLoader().load("wood.png");
+   var mesh = new THREE.Mesh(geometry, getWoodMaterial(texture));
    mesh.receiveShadow = true;
    mesh.position.set(posX, posY, posZ);
    mesh.name = name;
@@ -137,8 +141,8 @@ function getBorder(name, x, y, z, posX, posY, posZ) {
    return mesh;
 }
 
-function getWoodMaterial() {
-   var texture = new THREE.TextureLoader().load("wood.png");
+function getWoodMaterial(texture) {
+   //var texture = new THREE.TextureLoader().load("wood.png");
    var material = new THREE.MeshPhysicalMaterial({
       map : texture
    });
