@@ -1,5 +1,6 @@
 var stepX = 0.15;
 var stepY = 0.25;
+var start = false;
 
 function init() {
    var scene = new THREE.Scene();
@@ -21,8 +22,8 @@ function init() {
    var secondLight = getSecondLight();
    var leftBorder = getBorder("left", 1, 20, 2, -5, 0, 0);
    var rightBorder = getBorder("right", 1, 20, 2, 5, 0, 0);
-   var topBorder = getBorder("top", 11, 1, 2, 0, 10, 0);
-   var downBorder = getBorder("down", 9, 1, 2, 0, -9.5, 0);
+   var topBorder = getBorder("top", 11, 1, 2, 0, 10, 0); //CPU
+   var downBorder = getBorder("down", 9, 1, 2, 0, -9.5, 0); //Player
    var sphere = getSphere();
    var floor = getFloor();
 
@@ -40,18 +41,29 @@ function init() {
    animate(sphere, borders, renderer, scene, camera);
 }
 
+function spheremovement(sphere) {
+  if(start){
+    sphere.position.x += stepX;
+    sphere.position.y += stepY;
+
+  }
+
+}
+
 function animate(sphere, borders, renderer, scene, camera) {
    checkCollision(sphere, borders);
 
-   sphere.position.x += stepX;
-   sphere.position.y += stepY;
-
+// spheremovement
+   //sphere.position.x += stepX;
+   //sphere.position.y += stepY;
+   spheremovement(sphere);
    renderer.render(scene, camera);
 
    requestAnimationFrame(function() {
       animate(sphere, borders, renderer, scene, camera);
    });
 }
+
 
 function getLight() {
    var light = new THREE.DirectionalLight();
