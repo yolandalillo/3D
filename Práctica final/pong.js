@@ -1,5 +1,5 @@
 var stepX = 0.15;
-var stepY = 0.25;
+var stepY = 0.15;
 var start = false;
 var step = 0.5;
 var scoreCPU = 0;
@@ -7,8 +7,8 @@ var scorePlayer = 0;
 
 function init() {
    var scene = new THREE.Scene();
-   var sceneWidth = window.innerWidth - 20;
-   var sceneHeight = window.innerHeight - 20;
+   var sceneWidth = window.innerWidth - 200;
+   var sceneHeight = window.innerHeight - 200;
 
    var camera = new THREE.PerspectiveCamera(90, sceneWidth / sceneHeight, 0.01, 100);
    camera.position.set(0, -10, 15);
@@ -25,8 +25,6 @@ function init() {
    var secondLight = getSecondLight();
    var leftBorder = getBorder("left", 1, 20, 2, -5, 0, 0);
    var rightBorder = getBorder("right", 1, 20, 2, 5, 0, 0);
-   //var topBorder = getBorder("top",  2.5, 1, 2, 0, 9.5, 0); //CPU
-   //var downBorder = getBorder("down",  2.5, 1, 2, 0, -9.5, 0); //Player
    var topBorder = getBorder("top",  2.5, 1, 2, 0, 10.5, 0); //CPU
    var downBorder = getBorder("down",  2.5, 1, 2, 0, -10.5, 0); //Player
    var sphere = getSphere();
@@ -74,13 +72,32 @@ function playermovement(sphere, borders) {
   }
 
 }
+
+function cpumovement(sphere,borders) {
+  spheremovement(sphere);
+  var level = document.querySelector('input[name="level"]:checked').value;
+  // Levels CPU
+  if (level == 'Easy'){
+    borders[2].position.x = sphere.position.x * 0.15;
+  }else if (level == 'Medium') {
+    borders[2].position.x = sphere.position.x * 0.45;
+  }else if (level == 'Difficult') {
+    borders[2].position.x = sphere.position.x;
+  }
+  if (borders[2].position.x >= 5 || borders[2].position.x <= -5 ) {
+    borders[2].position.x = 0;
+  }
+
+}
+
         //ANIMATE//
 function animate(sphere, borders, renderer, scene, camera) {
    checkCollision(sphere, borders);
-
-
+   score(sphere);
    playermovement(sphere,borders);
    spheremovement(sphere);
+   cpumovement(sphere,borders);
+
    renderer.render(scene, camera);
 
    requestAnimationFrame(function() {
@@ -190,4 +207,38 @@ function checkCollision(sphere, borders) {
          break;
       }
    }
+}
+
+        //SCORE//
+
+function score(sphere) {
+  if (sphere.position.y > 10) {
+    sphere.position.x = 0;
+    sphere.position.y=0;
+    start = false;
+    scorePlayer +=1;
+    stepY = -stepY;
+  }
+  if (sphere.position.y < -10 ) {
+    sphere.position.x = 0;
+    sphere.position.y = 0;
+    start = false;
+    scoreCPU +=1;
+    stepY = -stepY;
+
+  }
+  if ((scorePlayer || scoreCPU) == 5) {
+    start = false;
+    if (scorePlayer == 5) {
+      document.getElementById("message").innerHTML = ('Player wins: ' + scorePlayer + '-' + scoreCPU + '. Press space to start again');
+    }
+    else if (scoreCPU ==5) {
+      document.getElementById("message").innerHTML = ('CPU wins: ' + scoreCPU + '-' + scorePlayer + '. Press space to start again');
+    }
+    scoreCPU = 0;
+    scorePlayer = 0;
+
+  }
+  document.getElementById("score").innerHTML = (scoreCPU + '-' + scorePlayer);
+
 }
