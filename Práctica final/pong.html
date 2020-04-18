@@ -1,22 +1,28 @@
+<!--
+Partes implementadas:
+- Funcionalidad básica
+- Funcionalidad avanzada (posibilidad de ganar a la CPU,
+introducir niveles de dificultad, ángulo de la cámara usando
+cuadro de controles, las raquetas del player están acotadas)
+-->
+
 <!DOCTYPE html>
 <html>
 
-<head>
-<title>PONG 3D</title>
+  <head>
+    <title>PONG 3D</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/103/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.6/dat.gui.min.js"></script>
+    <script src="pong.js"></script>
+  </head>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/103/three.min.js"></script>
-
-<script src="pong.js"></script>
-</head>
-
-<body onload="init()">
-  <h1 style="color:pink" id="message"></>Press "space" to start</h1>
-  <b>Select your level</b>
-  <input type="radio" name="level" value="Easy" checked> <b>Easy</b>
-  <input type="radio" name="level" value="Medium"> <b>Medium</b>
-  <input type="radio" name="level" value="Difficult"> <b>Difficult</b>
-  <h1 style="color:pink" id='score'>0-0</h1>
-
-</body>
+  <body onload="init()">
+    <h1 style="color:pink" id="message"></>Press "space" to start</h1>
+    <b>Select your level</b>
+    <input type="radio" name="level" value="Easy" checked> <b>Easy</b>
+    <input type="radio" name="level" value="Medium"> <b>Medium</b>
+    <input type="radio" name="level" value="Difficult"> <b>Difficult</b>
+    <h1 style="color:pink" id='score'>0-0</h1>
+  </body>
 
 </html>
