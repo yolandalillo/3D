@@ -192,17 +192,20 @@
             var y = document.getElementById("y").value;
             var z = document.getElementById("z").value;
             var lightDirection = [x,y,z];
-            vec3.normalize(lightDirection,lightDirection);
-            var lightDirectionUniform = gl.getUniformLocation(gl.program,"u_LightDirection");
-            gl.uniform3fv(lightDirectionUniform,lightDirection);
+            //vec3.normalize(lightDirection,lightDirection);
+            //var lightDirectionUniform = gl.getUniformLocation(gl.program,"u_LightDirection");
+            //gl.uniform3fv(lightDirectionUniform,lightDirection);
+            //ARREGLO: ASIGNABA DOS VECES SEGUIDAS u_LightDirection
 
             var xlight = document.getElementById("x").value;
             var ylight = document.getElementById("y").value;
             var zlight = document.getElementById("z").value;
             var lightDirection = [xlight, ylight, zlight];
-            vec3.normalize(lightDirection, lightDirection);
-            var lightDirectionUniform = gl.getUniformLocation(gl.program, "u_LightDirection");
-            gl.uniform3fv(lightDirectionUniform, lightDirection);
+
+            vec3.normalize(lightDirection,lightDirection);
+            var lightDirectionUniform = gl.getUniformLocation(gl.program,"u_LightDirection");
+            gl.uniform3fv(lightDirectionUniform,lightDirection);
+
 
         }
 

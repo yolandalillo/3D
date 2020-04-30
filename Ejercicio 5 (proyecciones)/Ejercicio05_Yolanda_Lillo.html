@@ -68,12 +68,14 @@
         }
 
         function mouse (){
-          var projectionValue = document.querySelector('input[name="projection"]:checked').value;
+          //ARREGLO: VAR PROJECTIONVALUE LO TENÍA FUERA DEL DOCUMENT... POR ESO
+          //NO FUNCIONABA CORRECTAMENTE
           document.addEventListener('wheel', function (event){
+            var projectionValue = document.querySelector('input[name="projection"]:checked').value;
              //Para que solo se mueva cuando este en prespectiva
-              if(projectionValue == 'perspective'){
-                z = event.wheelDelta > 0 ? z + 1 : z - 1
-              }
+            if(projectionValue == 'perspective'){
+              z = event.wheelDelta > 0 ? z + 1 : z - 1
+            }
           });
         }
 
