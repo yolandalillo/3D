@@ -6,6 +6,11 @@
   </head>
 <body onload="init()">
   <canvas id="myCanvas" width="640" height="480"></canvas>
+  <br>
+  <b>Light direction</b><br>
+  <input type="range" id="R" min="0" max="1" value="0.5" step="0.01">R<br>
+  <input type="range" id="G" min="0" max="1" value="0.5" step="0.01">G<br>
+  <input type="range" id="B" min="0" max="1" value="0.5" step="0.01">B<br>
 </body>
 
 <script id="shaderVs" type="x-shader/x-vertex">
@@ -36,7 +41,7 @@
   var pink = [1.0, 0.0, 0.5, 1.0];
   var blue = [0.0, 0.0, 1.0, 1.0];
   var green = [0.0, 1.0, 0.0, 1.0];
-  var big_square = 20.0;
+  var big_square = 10.0;
   var small_square = 10.0;
 
 

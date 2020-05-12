@@ -50,11 +50,35 @@
 
     <script>
         var gl;
+        var zeta = 3.0;
         var canvas;
         var count = 0.0;
+        var stop = true;
         const LATITUDE_BANDS = 30;
         const LONGITUDE_BANDS = 30;
         const RADIUS = 1;
+
+        document.onkeydown = function (ev) {
+          switch (ev.keyCode) {
+            case 32:
+            if (stop) {
+              stop = false;
+            }else {
+              stop = true;
+            }
+
+            break;
+
+            case 38: // Up
+            console.log("The user clicked Up");
+            zeta += 4.0;
+            break;
+            case 40: // Down
+            console.log("The user clicked Down");
+            zeta -= 4.0;
+            break;
+          }
+        }
 
         function init() {
             // Get canvas object from the DOM
@@ -175,7 +199,7 @@
 
             // Write u_vMatrix
             var vMatrixUniform = gl.getUniformLocation(gl.program, "u_vMatrix");
-            var vMatrix = mat4.lookAt(mat4.create(), [0, 0, 3], [0, 0, 0], [0, 1, 0]);
+            var vMatrix = mat4.lookAt(mat4.create(), [0, 0, zeta], [0, 0, 0], [0, 1, 0]);
             gl.uniformMatrix4fv(vMatrixUniform, false, vMatrix);
 
             // Write u_LightColor
@@ -254,7 +278,9 @@
             gl.drawElements(gl.TRIANGLES, LATITUDE_BANDS * LONGITUDE_BANDS * 3 * 2, gl.UNSIGNED_SHORT, 0);
 
             // Call drawScene again in the next browser repaint
-            count += 0.01;
+            if (stop) {
+              count += 0.01;
+            }
             requestAnimationFrame(drawScene);
         }
 
